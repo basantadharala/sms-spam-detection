@@ -13,10 +13,6 @@ https://sms-spam-detection-5009b0415210.herokuapp.com/
 - Simple and interactive web interface built with Streamlit.
 - Real-time prediction with instant feedback.
 
-## Screenshots
-
-![Screenshot1](screenshots/screenshot1.png)
-![Screenshot2](screenshots/screenshot2.png)
 
 ## How It Works
 
