@@ -4,11 +4,10 @@ import string
 from nltk.corpus import stopwords
 import nltk
 from nltk.stem.porter import PorterStemmer
-import  os
+import os
 nltk.data.path.append(os.path.expanduser('~/nltk_data'))
 
 ps = PorterStemmer()
-
 
 def transform_text(text):
     text = text.lower()
@@ -34,23 +33,55 @@ def transform_text(text):
 
     return " ".join(y)
 
-tfidf = pickle.load(open('vectorizer.pkl','rb'))
-model = pickle.load(open('model.pkl','rb'))
+# Load the vectorizer and model
+tfidf = pickle.load(open('vectorizer.pkl', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
 
-st.title("Email/SMS Spam Classifier")
+# Streamlit app
+st.set_page_config(
+    page_title="Email/SMS Spam Classifier",
+    page_icon="📧",
+    layout="centered"
+)
 
-input_sms = st.text_area("Enter the message")
+st.title("📧 Email/SMS Spam Classifier")
+st.image("https://static3.depositphotos.com/1000363/104/i/450/depositphotos_1045328-stock-photo-spam-warning.jpg", width=400)
+
+st.write("""
+### Enter the message below to check if it's spam or not.
+This tool uses a machine learning model to classify the message as **Spam** or **Not Spam**.
+""")
+
+input_sms = st.text_area("Enter the message", placeholder="Type your message here...")
 
 if st.button('Predict'):
-
-    # 1. preprocess
-    transformed_sms = transform_text(input_sms)
-    # 2. vectorize
-    vector_input = tfidf.transform([transformed_sms])
-    # 3. predict
-    result = model.predict(vector_input)[0]
-    # 4. Display
-    if result == 1:
-        st.header("Spam")
+    if input_sms:
+        # 1. Preprocess
+        transformed_sms = transform_text(input_sms)
+        # 2. Vectorize
+        vector_input = tfidf.transform([transformed_sms])
+        # 3. Predict
+        result = model.predict(vector_input)[0]
+        # 4. Display
+        if result == 1:
+            st.header("🚨 Spam")
+            st.warning("This message is classified as spam.")
+        else:
+            st.header("✅ Not Spam")
+            st.success("This message is classified as not spam.")
     else:
-        st.header("Not Spam")
+        st.error("Please enter a message to classify.")
+
+st.markdown("""
+<style>
+    .stButton>button {
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 4px;
+    }
+    .stTextArea textarea {
+        border: 2px solid #4CAF50;
+        border-radius: 4px;
+    }
+</style>
+""", unsafe_allow_html=True)
